@@ -23,8 +23,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-   
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -33,19 +31,22 @@
     YKResultCalenderModel *result = [YKResultCalenderModel resultCalenderWithStart:_startModel end:_endModel type:_calenderType];
     
     YKCalenderController *VC = [[YKCalenderController alloc] initWithIntervalYears:4 defaultCalender:result selectComplete:^(BOOL selected, YKCalenderType calenderType, YKCalenderModel *startModel, YKCalenderModel *endModel) {
-        _calenderType = calenderType;
-        _startModel = startModel;
-        _endModel = endModel;
+        
+        if (selected) {
+            
+            _calenderType = calenderType;
+            _startModel = startModel;
+            _endModel = endModel;
+            
+            NSString *startDate = [startModel dateTextForCalenderType:calenderType];
+            NSLog(@"startDate=%@", startDate);
+            if (calenderType == YKCalenderType_region) {
+                NSString *endDate = [endModel dateTextForCalenderType:calenderType];
+                NSLog(@"endDate=%@", endDate);
+            }
+        }
     }];
     [self presentViewController:VC animated:YES completion:nil];
-    
 }
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 
 @end

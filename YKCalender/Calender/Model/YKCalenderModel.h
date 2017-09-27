@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "YKCalender_Header.h"
 
 @interface YKCalenderModel : NSObject
 
@@ -26,5 +27,7 @@
 - (instancetype)initWithYear:(NSUInteger)year month:(NSUInteger)month;
 
 - (instancetype)initWithYear:(NSUInteger)year month:(NSUInteger)month day:(NSUInteger)day;
+
+- (NSString*)dateTextForCalenderType:(YKCalenderType)type;
 
 @end

@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "YKCalender_Header.h"
 #import "YKResultCalenderModel.h"
+#import "YKCalenderBaseView.h"
 
 typedef void(^YKCalenderDidSelectBlock)(BOOL selected, YKCalenderType calenderType, YKCalenderModel *startModel, YKCalenderModel *endModel);
+
 @interface YKCalenderController : UIViewController
 
 - (instancetype)initWithIntervalYears:(NSUInteger)intervalYears

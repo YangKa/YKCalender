@@ -11,8 +11,6 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 
-#import "YKCalenderModel.h"
-
 #define YKCalenderColorRGB(R, G, B) [UIColor colorWithRed:(R/255.0) green:(G/255.0) blue:(B/255.0) alpha:1.0]
 
 #define YKCalender_Color1 YKCalenderColorRGB(43, 43, 43)

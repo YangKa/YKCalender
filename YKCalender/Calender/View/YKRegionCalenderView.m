@@ -25,6 +25,14 @@ static NSString *const cellIdentifier = @"cellIdentifier";
 static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
 @implementation YKRegionCalenderView
 
+- (instancetype)initWithFrame:(CGRect)frame intervalYears:(NSUInteger)intervalYears delegate:(id)delegate{
+    self = [super initWithFrame:frame intervalYears:intervalYears delegate:delegate];
+    if (self) {
+        [self layoutUI];
+    }
+    return self;
+}
+
 #pragma mark
 #pragma mark layout UI
 - (void)layoutUI{
@@ -58,6 +66,9 @@ static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.itemSize = CGSizeMake(itemWidth, itemHeight);
+    if (@available(iOS 9.0, *)) {
+        layout.sectionHeadersPinToVisibleBounds = YES;
+    }
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 0;
     layout.headerReferenceSize = CGSizeMake(self.frame.size.width, sectionHeaderHeight);
@@ -137,6 +148,7 @@ static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
     if (kind == UICollectionElementKindSectionHeader) {
         
         UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionHeaderIdentifier forIndexPath:indexPath];
+        view.backgroundColor = [UIColor whiteColor];
         
         UIView *line = (UIView*)[view viewWithTag:101];
         UILabel *label = (UILabel*)[view viewWithTag:102];
@@ -195,18 +207,13 @@ static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
 #pragma mark
 #pragma mark public method
 - (void)scrollToBeginCalender:(YKCalenderModel*)startModel endCalender:(YKCalenderModel*)endModel calenderType:(YKCalenderType)calenderType{
-    
-    if (calenderType != YKCalenderType_region) {
-        return;
-    }
-    
-    if (startModel && endModel) {
+    [super scrollToBeginCalender:startModel endCalender:endModel calenderType:calenderType];
+    if (calenderType == YKCalenderType_region && (startModel && endModel) ) {
         _startIndexPath = [self indexPathForCalender:startModel];
         _endIndexPath = [self indexPathForCalender:endModel];
         
         [self highlightAllSelectRows];
         [_collectionView scrollToItemAtIndexPath:_startIndexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:NO];
-        
     }else{
         CGFloat positionY = _collectionView.contentSize.height - _collectionView.frame.size.height;
         [_collectionView setContentOffset:CGPointMake(0, positionY) animated:NO];
@@ -341,8 +348,7 @@ static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
 
 #pragma mark
 - (NSUInteger)curYearForSection:(NSUInteger)section{
-    NSUInteger startYear = self.endYear - self.intervalYears + 1;
-    return startYear + section/12;
+    return self.startYear + section/12;
 }
 
 - (NSUInteger)curMonthForSection:(NSUInteger)section{

@@ -7,12 +7,13 @@
 //
 
 #import "YKCalenderController.h"
+#import "YKCalender_Header.h"
 #import "YKCalenderMenuBar.h"
 #import "YKCalenderProtocol.h"
-#import "YKCalenderViewHeader.h"
-#import "YKCalenderBaseView.h"
+
 
 @interface YKCalenderController ()<UIScrollViewDelegate, YKCalenderSelectProtocol>{
+    NSArray *_pageList;
     NSUInteger _intervalYears;
 }
 
@@ -42,6 +43,18 @@ static CGFloat const MenuBarHeight = 50.0f;
         _intervalYears = intervalYears;
         _resultModel = result;
         _pageViewList = [NSMutableArray array];
+        
+        _pageList = @[@{@"title":@"日",
+                       @"className":@"YKDayCalenderView"},
+                     @{@"title":@"月",
+                       @"className":@"YKMonthCalenderView"},
+                     @{@"title":@"季度",
+                       @"className":@"YKQuarterCalenderView"},
+                     @{@"title":@"年",
+                       @"className":@"YKYearCalenderView"},
+                     @{@"title":@"自定义",
+                       @"className":@"YKRegionCalenderView"}
+                     ];
     }
     return self;
 }
@@ -63,7 +76,6 @@ static CGFloat const MenuBarHeight = 50.0f;
 #pragma mark layout UI
 - (void)layoutUI{
     [self addNavigationBar];
-    [self addPageMenuBar];
     [self addChildrenPages];
 }
 
@@ -95,17 +107,44 @@ static CGFloat const MenuBarHeight = 50.0f;
     [backBarView addSubview:line];
 }
 
-- (void)addPageMenuBar{
-    NSArray *items = @[@"日", @"月", @"季度", @"年", @"自定义"];
+- (void)addChildrenPages{
+    
+    //标题
+    NSMutableArray *titles = [NSMutableArray array];
+    for (int i =0; i < _pageList.count; i++) {
+        NSDictionary *pageDic = _pageList[i];
+        [titles addObject:pageDic[@"title"]];
+    }
     CGRect frame = CGRectMake(0, NavHeight, self.view.frame.size.width, MenuBarHeight);
     __weak typeof(self) weakSelf = self;
-    YKCalenderMenuBar *menuBar = [[YKCalenderMenuBar alloc] initWithFrame:frame items:items didSelectBlock:^(NSUInteger index) {
+    YKCalenderMenuBar *menuBar = [[YKCalenderMenuBar alloc] initWithFrame:frame items:titles didSelectBlock:^(NSUInteger index) {
         [weakSelf scrollToPageIndex:index];
     }];
     [self.view addSubview:menuBar];
     self.menuBar = menuBar;
+    
+    //页签
+    CGFloat pageWidth = self.view.frame.size.width;
+    CGFloat pageHeight = self.view.frame.size.height - CGRectGetMaxY(_menuBar.frame);
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_menuBar.frame), pageWidth, pageHeight)];
+    scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.pagingEnabled = YES;
+    scrollView.delegate = self;
+    [self.view addSubview:scrollView];
+    self.pageScorllView = scrollView;
+    
+    for (int i =0; i < _pageList.count; i++) {
+        NSDictionary *pageDic = _pageList[i];
+        
+        Class class = NSClassFromString(pageDic[@"className"]);
+        YKCalenderBaseView *calenderView = [[class alloc] initWithFrame:CGRectMake(pageWidth*i, 0, pageWidth, pageHeight) intervalYears:_intervalYears delegate:self];
+        [scrollView addSubview:calenderView];
+        [_pageViewList addObject:calenderView];
+    }
+    scrollView.contentSize = CGSizeMake(pageWidth*_pageList.count, 0);
 }
 
+/*
 - (void)addChildrenPages{
     
     CGFloat pageWidth = self.view.frame.size.width;
@@ -117,42 +156,49 @@ static CGFloat const MenuBarHeight = 50.0f;
     [self.view addSubview:scrollView];
     self.pageScorllView = scrollView;
     
-    NSArray *classList = @[@"YKDayCalenderView", @"YKMonthCalenderView", @"YKQuarterCalenderView", @"YKQuarterCalenderView", @"YKRegionCalenderView"];
-    
+    NSArray *classList = @[@"YKDayCalenderView", @"YKMonthCalenderView", @"YKQuarterCalenderView", @"YKYearCalenderView", @"YKRegionCalenderView"];
+    for (int i =0; i < classList.count; i++) {
+        Class class = NSClassFromString(classList.firstObject);
+        YKCalenderBaseView *calenderView = [[class alloc] initWithFrame:CGRectMake(pageWidth*i, 0, pageWidth, pageHeight) intervalYears:_intervalYears delegate:self];
+        [scrollView addSubview:calenderView];
+        [_pageViewList addObject:calenderView];
+    }
+    scrollView.contentSize = CGSizeMake(pageWidth*classList.count, 0);
 
-    YKDayCalenderView *dayCalenderView = [[YKDayCalenderView alloc] initWithFrame:CGRectMake(0, 0, pageWidth, pageHeight)
-                                                                    intervalYears:_intervalYears
-                                                                         delegate:self];
-    [scrollView addSubview:dayCalenderView];
-    [_pageViewList addObject:dayCalenderView];
-    
-    YKMonthCalenderView *monthCalenderView = [[YKMonthCalenderView alloc] initWithFrame:CGRectMake(pageWidth, 0, pageWidth, pageHeight)
-                                                                          intervalYears:_intervalYears
-                                                                               delegate:self];
-    [scrollView addSubview:monthCalenderView];
-    [_pageViewList addObject:monthCalenderView];
-    
-    YKQuarterCalenderView *quarterCalenderView = [[YKQuarterCalenderView alloc] initWithFrame:CGRectMake(2*pageWidth, 0, pageWidth, pageHeight)
-                                                                                intervalYears:_intervalYears
-                                                                                     delegate:self];
-    [scrollView addSubview:quarterCalenderView];
-    [_pageViewList addObject:quarterCalenderView];
-    
-    YKYearCalenderView *yearCalenderView = [[YKYearCalenderView alloc] initWithFrame:CGRectMake(3*pageWidth, 0, pageWidth, pageHeight)
-                                                                       intervalYears:_intervalYears
-                                                                            delegate:self];
-    [scrollView addSubview:yearCalenderView];
-    [_pageViewList addObject:yearCalenderView];
-    
-//    YKCustomCalenderView *customCalenderView = [[YKCustomCalenderView alloc] initWithFrame:CGRectMake(4*pageWidth, 0, pageWidth, pageHeight)
-//                                                                             intervalYears:_intervalYears
-//                                                                                  delegate:self];
-//    [scrollView addSubview:customCalenderView];
-//    [_pageViewList addObject:customCalenderView];
-    
-    
-    scrollView.contentSize = CGSizeMake(pageWidth*5, 0);
+//    YKDayCalenderView *dayCalenderView = [[YKDayCalenderView alloc] initWithFrame:CGRectMake(0, 0, pageWidth, pageHeight)
+//                                                                    intervalYears:_intervalYears
+//                                                                         delegate:self];
+//    [scrollView addSubview:dayCalenderView];
+//    [_pageViewList addObject:dayCalenderView];
+//
+//    YKMonthCalenderView *monthCalenderView = [[YKMonthCalenderView alloc] initWithFrame:CGRectMake(pageWidth, 0, pageWidth, pageHeight)
+//                                                                          intervalYears:_intervalYears
+//                                                                               delegate:self];
+//    [scrollView addSubview:monthCalenderView];
+//    [_pageViewList addObject:monthCalenderView];
+//
+//    YKQuarterCalenderView *quarterCalenderView = [[YKQuarterCalenderView alloc] initWithFrame:CGRectMake(2*pageWidth, 0, pageWidth, pageHeight)
+//                                                                                intervalYears:_intervalYears
+//                                                                                     delegate:self];
+//    [scrollView addSubview:quarterCalenderView];
+//    [_pageViewList addObject:quarterCalenderView];
+//
+//    YKYearCalenderView *yearCalenderView = [[YKYearCalenderView alloc] initWithFrame:CGRectMake(3*pageWidth, 0, pageWidth, pageHeight)
+//                                                                       intervalYears:_intervalYears
+//                                                                            delegate:self];
+//    [scrollView addSubview:yearCalenderView];
+//    [_pageViewList addObject:yearCalenderView];
+//
+////    YKCustomCalenderView *customCalenderView = [[YKCustomCalenderView alloc] initWithFrame:CGRectMake(4*pageWidth, 0, pageWidth, pageHeight)
+////                                                                             intervalYears:_intervalYears
+////                                                                                  delegate:self];
+////    [scrollView addSubview:customCalenderView];
+////    [_pageViewList addObject:customCalenderView];
+//
+//
+//    scrollView.contentSize = CGSizeMake(pageWidth*5, 0);
 }
+ */
 
 #pragma mark
 #pragma mark Delegate

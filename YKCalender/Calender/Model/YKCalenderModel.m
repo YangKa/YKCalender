@@ -37,4 +37,32 @@
     return self;
 }
 
+- (NSString*)dateTextForCalenderType:(YKCalenderType)type{
+    
+    if (!self) {
+        NSLog(@"日期为空");
+        return @"";
+    }
+    
+    NSString *dateText;
+    switch (type) {
+        case YKCalenderType_day:{
+            dateText = [NSString stringWithFormat:@"%ld-%02ld-%02ld", self.year, self.month, self.day];
+        }break;
+        case YKCalenderType_month:{
+            dateText = [NSString stringWithFormat:@"%ld-%02ld", self.year, self.month];
+        }break;
+        case YKCalenderType_quarter:{
+            dateText = [NSString stringWithFormat:@"%ld-%02ld", self.year, self.quarter];
+        }break;
+        case YKCalenderType_year:{
+            dateText = [NSString stringWithFormat:@"%ld", self.year];
+        }break;
+        case YKCalenderType_region:{
+            dateText = [NSString stringWithFormat:@"%ld-%02ld-%02ld", self.year, self.month, self.day];
+        }break;
+    }
+    return dateText;
+}
+
 @end

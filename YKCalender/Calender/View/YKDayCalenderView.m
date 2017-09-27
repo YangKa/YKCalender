@@ -64,6 +64,9 @@ static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.itemSize = CGSizeMake(itemWidth, itemHeight);
+    if (@available(iOS 9.0, *)) {
+        layout.sectionHeadersPinToVisibleBounds = YES;
+    }
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 0;
     layout.headerReferenceSize = CGSizeMake(self.frame.size.width, sectionHeaderHeight);
@@ -129,6 +132,7 @@ static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
     if (kind == UICollectionElementKindSectionHeader) {
         
         UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:sectionHeaderIdentifier forIndexPath:indexPath];
+        view.backgroundColor = [UIColor whiteColor];
         
         UIView *line = (UIView*)[view viewWithTag:101];
         UILabel *label = (UILabel*)[view viewWithTag:102];
@@ -174,7 +178,7 @@ static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
 #pragma mark
 #pragma mark event method
 - (void)scrollToBeginCalender:(YKCalenderModel*)startModel endCalender:(YKCalenderModel*)endModel calenderType:(YKCalenderType)calenderType{
-    
+    [super scrollToBeginCalender:startModel endCalender:endModel calenderType:calenderType];
     if (calenderType != YKCalenderType_day) {
         return;
     }
@@ -204,7 +208,8 @@ static NSString *const sectionHeaderIdentifier = @"sectionHeaderIdentifier";
     
     NSUInteger curYear = [self curYearForSection:section];
     NSUInteger curMonth = [self curMonthForSection:section];
-    return [YKDateTool daysForMonth:curMonth year:curYear];
+    NSUInteger firstWeakDay = [YKDateTool weekDayForYear:curYear month:curMonth day:1] -1;
+    return [YKDateTool daysForMonth:curMonth year:curYear] + firstWeakDay;
 }
 
 //section header text

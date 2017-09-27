@@ -156,6 +156,7 @@ static CGFloat leftTableViewWidth = 100.0f;
 #pragma mark
 #pragma mark event method
 - (void)scrollToBeginCalender:(YKCalenderModel*)startModel endCalender:(YKCalenderModel*)endModel calenderType:(YKCalenderType)calenderType{
+    [super scrollToBeginCalender:startModel endCalender:endModel calenderType:calenderType];
     if (calenderType != YKCalenderType_month) {
         return;
     }

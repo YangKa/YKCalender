@@ -82,9 +82,7 @@
             days = 28;
         }
     }
-    
-    NSUInteger firstWeakDay = [self weekDayForYear:year month:month day:1] -1;
-    return days + firstWeakDay;
+    return days;
 }
 
 + (BOOL)isFutureCalenderForYear:(NSUInteger)year month:(NSUInteger)month day:(NSUInteger)day{

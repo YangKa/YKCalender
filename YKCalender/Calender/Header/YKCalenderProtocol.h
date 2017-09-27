@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "YKCalender_Header.h"
+@class YKCalenderModel;
 
 @protocol YKCalenderSelectProtocol <NSObject>
 
