@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8F07498F1F7A335500BA0E19 /* HTTPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F07498D1F7A335500BA0E19 /* HTTPViewController.m */; };
 		8F0749CE1F7A364600BA0E19 /* YKCalenderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F0749B21F7A364600BA0E19 /* YKCalenderController.m */; };
 		8F0749CF1F7A364600BA0E19 /* YKCalenderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F0749B91F7A364600BA0E19 /* YKCalenderModel.m */; };
 		8F0749D01F7A364600BA0E19 /* YKResultCalenderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F0749BB1F7A364600BA0E19 /* YKResultCalenderModel.m */; };
@@ -27,8 +26,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8F07498D1F7A335500BA0E19 /* HTTPViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HTTPViewController.m; sourceTree = "<group>"; };
-		8F07498E1F7A335500BA0E19 /* HTTPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HTTPViewController.h; sourceTree = "<group>"; };
 		8F0749B11F7A364600BA0E19 /* YKCalenderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKCalenderController.h; sourceTree = "<group>"; };
 		8F0749B21F7A364600BA0E19 /* YKCalenderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YKCalenderController.m; sourceTree = "<group>"; };
 		8F0749B41F7A364600BA0E19 /* YKCalender_Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YKCalender_Header.h; sourceTree = "<group>"; };
@@ -177,8 +174,6 @@
 			isa = PBXGroup;
 			children = (
 				8F0749AF1F7A364600BA0E19 /* Calender */,
-				8F07498E1F7A335500BA0E19 /* HTTPViewController.h */,
-				8F07498D1F7A335500BA0E19 /* HTTPViewController.m */,
 				8FA20DE81F7A1A7F0067BB1F /* AppDelegate.h */,
 				8FA20DE91F7A1A7F0067BB1F /* AppDelegate.m */,
 				8FA20DEB1F7A1A7F0067BB1F /* ViewController.h */,
@@ -271,7 +266,6 @@
 				8F0749DB1F7A3D7300BA0E19 /* YKCalenderBaseView.m in Sources */,
 				8FA20DF81F7A1A7F0067BB1F /* main.m in Sources */,
 				8F0749D01F7A364600BA0E19 /* YKResultCalenderModel.m in Sources */,
-				8F07498F1F7A335500BA0E19 /* HTTPViewController.m in Sources */,
 				8F0749EA1F7A609200BA0E19 /* YKYearCalenderView.m in Sources */,
 				8FA20DEA1F7A1A7F0067BB1F /* AppDelegate.m in Sources */,
 				8F0749D21F7A364600BA0E19 /* YKDateTool.m in Sources */,
